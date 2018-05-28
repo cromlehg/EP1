@@ -34,16 +34,16 @@ contract LotteryRoom is ValueBonusFeature {
     finished = true;
   }
 
-  function setMembersLimit(uint newMembersLimit) public onlyOwner notlocked {
+  function setMembersLimit(uint newMembersLimit) public onlyOwner notLocked {
     require(newMembersLimit > 0);
     membersLimit = newMembersLimit;
   }
 
-  function setPercentRate(uint newPercentRate) public onlyOwner notlocked {
+  function setPercentRate(uint newPercentRate) public onlyOwner notLocked {
     percentRate = newPercentRate;
   }
 
-  function setFeePercent(uint newFeePercent) public onlyOwner notlocked {
+  function setFeePercent(uint newFeePercent) public onlyOwner notLocked {
     feePercent = newFeePercent;
   }
 
@@ -65,7 +65,7 @@ contract LotteryRoom is ValueBonusFeature {
     to.transfer(fee);
   }
 
-  function setRewards(address[] addresses, uint values[]) {
+  function setRewards(address[] addresses, uint[] values) {
     require(locked && !finished);
     for(uint i = 0; i < addresses.length; i++) {
       rewards[addresses[i]] = values[i];
@@ -74,7 +74,7 @@ contract LotteryRoom is ValueBonusFeature {
 
   function setReward(address to, uint value) {
     require(locked && !finished);
-    rewards[address] = value;
+    rewards[to] = value;
   }
 
   function refund() public {
@@ -85,13 +85,13 @@ contract LotteryRoom is ValueBonusFeature {
   function fallback() internal checkLimits {
     if(invested[msg.sender] == 0) {
        membersCount = membersCount.add(1);
-       members.add(msg.sender);
+       members.push(msg.sender);
     }
     invested[msg.sender] = invested[msg.sender].add(msg.value);
     uint personFee = msg.value.mul(feePercent).div(percentRate);
     fee = fee.add(personFee);
     uint personInvestedClean = msg.value.sub(personFee);
-    investedClear[msg.sender] = invested[msg.sender].add(personInvestedClean);
+    investedClean[msg.sender] = invested[msg.sender].add(personInvestedClean);
     valueRates[msg.sender] = getValueBonusIndex(invested[msg.sender]);
   }
 

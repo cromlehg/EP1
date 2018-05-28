@@ -2,9 +2,9 @@ pragma solidity ^0.4.18;
 
 import './ownership/Ownable.sol';
 
-contract LockedFeature is OWnable {
+contract LockedFeature is Ownable {
 
-  uint public locked;
+  bool public locked;
 
   modifier notLocked() {
     require(!locked);
